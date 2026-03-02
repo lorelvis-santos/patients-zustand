@@ -108,7 +108,7 @@ export default function PatientForm() {
             className={`w-full p-3 border ${errors.symptoms ? "border-red-600" : "border-gray-100"}`}
             placeholder="Síntomas del paciente"
             {...register("symptoms", {
-              required: "La fecha de alta es obligatoria",
+              required: "Los síntomas son obligatorios",
             })}
           ></textarea>
           <Error message={errors.symptoms?.message} />

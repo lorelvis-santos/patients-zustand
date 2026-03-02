@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import Error from "./Error";
 import type { DraftPatient } from "../types";
 import { usePatientStore } from "../store/store";
+import { useShallow } from "zustand/shallow";
 
 export default function PatientForm() {
   const {
@@ -9,14 +10,42 @@ export default function PatientForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<DraftPatient>();
 
-  const addPatient = usePatientStore((state) => state.addPatient);
+  const { patients, addPatient, updatePatient, editingId } = usePatientStore(
+    useShallow((state) => ({
+      patients: state.patients,
+      addPatient: state.addPatient,
+      updatePatient: state.updatePatient,
+      editingId: state.editingId,
+    })),
+  );
 
   const registerPatient = (data: DraftPatient) => {
-    addPatient(data);
+    if (editingId) {
+      updatePatient({
+        id: editingId,
+        ...data,
+      });
+    } else {
+      addPatient(data);
+    }
+
     reset();
   };
+
+  const selectedPatient = editingId
+    ? patients.find((patient) => patient.id === editingId)
+    : null;
+
+  if (selectedPatient) {
+    setValue("name", selectedPatient.name);
+    setValue("caretaker", selectedPatient.caretaker);
+    setValue("email", selectedPatient.email);
+    setValue("date", selectedPatient.date);
+    setValue("symptoms", selectedPatient.symptoms);
+  }
 
   return (
     <div className="md:w-1/2 lg:w-2/5 mx-5">

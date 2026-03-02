@@ -1,15 +1,16 @@
 import { useForm } from "react-hook-form";
 import Error from "./Error";
+import type { DraftPatient } from "../types";
 
 export default function PatientForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<DraftPatient>();
 
-  const registerPatient = () => {
-    console.log("registrando paciente...");
+  const registerPatient = (data: DraftPatient) => {
+    console.log(data);
   };
 
   return (
@@ -39,7 +40,7 @@ export default function PatientForm() {
             })}
           />
 
-          <Error message={errors.name?.message?.toString()} />
+          <Error message={errors.name?.message} />
         </div>
 
         <div className="mb-5">
@@ -55,7 +56,7 @@ export default function PatientForm() {
               required: "El nombre del propietario es obligatorio",
             })}
           />
-          <Error message={errors.caretaker?.message?.toString()} />
+          <Error message={errors.caretaker?.message} />
         </div>
 
         <div className="mb-5">
@@ -75,7 +76,7 @@ export default function PatientForm() {
               },
             })}
           />
-          <Error message={errors.email?.message?.toString()} />
+          <Error message={errors.email?.message} />
         </div>
 
         <div className="mb-5">
@@ -90,7 +91,7 @@ export default function PatientForm() {
               required: "La fecha de alta es obligatoria",
             })}
           />
-          <Error message={errors.date?.message?.toString()} />
+          <Error message={errors.date?.message} />
         </div>
 
         <div className="mb-5">
@@ -105,7 +106,7 @@ export default function PatientForm() {
               required: "La fecha de alta es obligatoria",
             })}
           ></textarea>
-          <Error message={errors.symptoms?.message?.toString()} />
+          <Error message={errors.symptoms?.message} />
         </div>
 
         <input

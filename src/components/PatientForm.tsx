@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form";
+import { useShallow } from "zustand/shallow";
+import { toast } from "react-toastify";
 import Error from "./Error";
 import type { DraftPatient } from "../types";
 import { usePatientStore } from "../store/store";
-import { useShallow } from "zustand/shallow";
 
 export default function PatientForm() {
   const {
@@ -28,8 +29,14 @@ export default function PatientForm() {
         id: editingId,
         ...data,
       });
+      toast("Paciente actualizado correctamente", {
+        type: "success",
+      });
     } else {
       addPatient(data);
+      toast("Paciente registrado correctamente", {
+        type: "success",
+      });
     }
 
     reset();

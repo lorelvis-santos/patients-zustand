@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import type { DraftPatient, Patient } from "../types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -17,29 +17,36 @@ const createPatient = (patient: DraftPatient): Patient => {
 };
 
 export const usePatientStore = create<PatientState>()(
-  devtools((set) => ({
-    patients: [],
-    editingId: null,
-    addPatient: (data: DraftPatient) => {
-      set((state) => ({
-        patients: [...state.patients, createPatient(data)],
-      }));
-    },
-    updatePatient: (patient: Patient) => {
-      set((state) => ({
-        patients: state.patients.map((p) =>
-          p.id === patient.id ? patient : p,
-        ),
+  devtools(
+    persist(
+      (set) => ({
+        patients: [],
         editingId: null,
-      }));
-    },
-    deletePatient: (id: Patient["id"]) => {
-      set((state) => ({
-        patients: state.patients.filter((patient) => patient.id !== id),
-      }));
-    },
-    setEditingId: (id: Patient["id"] | null) => {
-      set(() => ({ editingId: id }));
-    },
-  })),
+        addPatient: (data: DraftPatient) => {
+          set((state) => ({
+            patients: [...state.patients, createPatient(data)],
+          }));
+        },
+        updatePatient: (patient: Patient) => {
+          set((state) => ({
+            patients: state.patients.map((p) =>
+              p.id === patient.id ? patient : p,
+            ),
+            editingId: null,
+          }));
+        },
+        deletePatient: (id: Patient["id"]) => {
+          set((state) => ({
+            patients: state.patients.filter((patient) => patient.id !== id),
+          }));
+        },
+        setEditingId: (id: Patient["id"] | null) => {
+          set(() => ({ editingId: id }));
+        },
+      }),
+      {
+        name: "patient-storage",
+      },
+    ),
+  ),
 );
